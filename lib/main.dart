@@ -5,11 +5,10 @@ import 'app/my_app.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  runApp(const MyApp());
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  runApp(const MyApp());
 
   // FirebaseFirestore.instance.collection('students_warings').doc().set({
   //   'student_id': 'YdviIbZRx1AbCbO4JpR9',
