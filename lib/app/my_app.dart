@@ -14,7 +14,6 @@ class MyApp extends StatelessWidget {
   static const grades = '/grades';
   static const schedule = '/schedule';
   static const warnings = '/warnings';
-  static const warningDetails = '/warning-details';
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,6 @@ class MyApp extends StatelessWidget {
         grades: (context) => const Grades(),
         schedule: (context) => const Schedule(),
         warnings: (context) => const Warnings(),
-        warningDetails: (context) => const WarningDetails(),
       },
     );
   }
