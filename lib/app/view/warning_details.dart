@@ -1,3 +1,4 @@
+import 'package:app_aluno_online/app/my_app.dart';
 import 'package:flutter/material.dart';
 
 class WarningDetails extends StatelessWidget {
@@ -10,9 +11,17 @@ class WarningDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void navigate(String path) {
+      Navigator.pop(context);
+      Navigator.of(context).pushNamed(path);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Aviso institucional'),
+        leading: IconButton(
+            onPressed: () => navigate(MyApp.warnings),
+            icon: const Icon(Icons.arrow_back)),
       ),
       body: Column(children: [
         Center(

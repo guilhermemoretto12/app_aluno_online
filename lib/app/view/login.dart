@@ -49,7 +49,7 @@ class Login extends StatelessWidget {
               width: 150,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(MyApp.home);
+                  Navigator.of(context).pushNamed(MyApp.warnings);
                 },
                 child: const Text('ENTRAR'),
               ),
