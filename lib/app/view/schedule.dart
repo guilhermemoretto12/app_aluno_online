@@ -1,5 +1,8 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
+import '../api/pdf_api.dart';
+import 'pdf_viewer.dart';
 
 class Schedule extends StatefulWidget {
   const Schedule({Key? key}) : super(key: key);
@@ -27,7 +30,7 @@ class _TestState extends State<Schedule> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Horário de aula'),
+        title: const Text('Horários'),
       ),
       body: FutureBuilder<ListResult>(
           future: futureFiles,
@@ -39,13 +42,17 @@ class _TestState extends State<Schedule> {
                   itemCount: files.length,
                   itemBuilder: (context, index) {
                     final file = files[index];
+                    var fileName = file.name;
                     return ListTile(
                       title: Text(file.name),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.file_open),
-                        color: Colors.black,
-                        onPressed: () => {},
-                      ),
+                      onTap: () async {
+                        var url = '/files/$fileName';
+                        final file = await PDFApi.loadFirebase(url);
+
+                        if (file == null) return;
+                        openPDF(context, file);
+                      },
+                      trailing: const Icon(Icons.file_open, color: Colors.black),
                     );
                   });
             } else if (snapshot.hasError) {
@@ -56,4 +63,8 @@ class _TestState extends State<Schedule> {
           }),
     );
   }
+
+  void openPDF(BuildContext context, File file) => Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => PDFViewer(file: file)),
+      );
 }

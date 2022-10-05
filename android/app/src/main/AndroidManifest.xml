@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.gmtta.app_aluno_online">
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
    <application
         android:label="Aluno Online"
         android:name="${applicationName}"

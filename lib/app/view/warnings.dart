@@ -57,7 +57,7 @@ class _WarningsState extends State<Warnings> {
                     ListTile(
                       leading: const Icon(Icons.calendar_month_outlined),
                       minLeadingWidth: 30,
-                      title: const Text('Horário de aula'),
+                      title: const Text('Horários'),
                       onTap: () => navigate(MyApp.schedule),
                     ),
                     ListTile(
