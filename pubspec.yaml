@@ -38,12 +38,11 @@ dependencies:
   cloud_firestore: ^3.4.6
   firebase_storage: ^10.3.7
   intl: ^0.17.0
-
   flutter_pdfview: 1.2.1
-  file_picker:
   path:
   path_provider:
-  http:
+  firebase_auth:
+  google_sign_in:
 
 
 dev_dependencies:

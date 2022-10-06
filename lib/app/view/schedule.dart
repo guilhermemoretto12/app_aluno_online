@@ -1,3 +1,7 @@
+// ignore_for_file: avoid_init_to_null
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -12,13 +16,24 @@ class Schedule extends StatefulWidget {
 }
 
 class _TestState extends State<Schedule> {
-  late Future<ListResult> futureFiles;
+  late Future<ListResult>? futureFiles = null;
+  late DocumentSnapshot<Map<String, dynamic>>? user = null;
 
   @override
   void initState() {
     super.initState();
 
-    futureFiles = FirebaseStorage.instance.ref('/files').listAll();
+    FirebaseFirestore.instance
+        .collection("students")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) {
+      futureFiles =
+          FirebaseStorage.instance.ref('/${value.get("class_id")}').listAll();
+      setState(() {
+        user = value;
+      });
+    });
   }
 
   @override
@@ -46,13 +61,14 @@ class _TestState extends State<Schedule> {
                     return ListTile(
                       title: Text(file.name),
                       onTap: () async {
-                        var url = '/files/$fileName';
+                        var url = '/${user?.get("class_id")}/$fileName';
                         final file = await PDFApi.loadFirebase(url);
 
                         if (file == null) return;
                         openPDF(context, file);
                       },
-                      trailing: const Icon(Icons.file_open, color: Colors.black),
+                      trailing:
+                          const Icon(Icons.file_open, color: Colors.black),
                     );
                   });
             } else if (snapshot.hasError) {

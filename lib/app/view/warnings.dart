@@ -1,7 +1,8 @@
+import 'package:app_aluno_online/app/api/auth.dart';
 import 'package:app_aluno_online/app/view/warning_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../my_app.dart';
 
@@ -14,16 +15,26 @@ class Warnings extends StatefulWidget {
 
 class _WarningsState extends State<Warnings> {
   late List<QueryDocumentSnapshot<Map<String, dynamic>>> warningsStudent = [];
+  // ignore: avoid_init_to_null
+  late DocumentSnapshot<Map<String, dynamic>>? user = null;
   @override
   void initState() {
     super.initState();
 
     FirebaseFirestore.instance
         .collection("students_warings")
-        .where("student_id", isEqualTo: "YdviIbZRx1AbCbO4JpR9")
+        .where("student_id", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) => setState(() {
               warningsStudent = value.docs;
+            }));
+
+    FirebaseFirestore.instance
+        .collection("students")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => setState(() {
+              user = value;
             }));
   }
 
@@ -45,15 +56,28 @@ class _WarningsState extends State<Warnings> {
               Flexible(
                 child: ListView(
                   children: [
-                    const SizedBox(
+                    SizedBox(
                         height: 64,
                         child: DrawerHeader(
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.blue,
                           ),
-                          child: Text('Nome do acadêmico - 00000000',
-                              style: TextStyle(color: Colors.white)),
+                          child: Text(
+                              FirebaseAuth.instance.currentUser!.displayName !=
+                                      null
+                                  ? (FirebaseAuth.instance.currentUser!
+                                          .displayName as String) +
+                                      ' - ' +
+                                      (user != null ? user?.get('ra') : '')
+                                  : 'erro',
+                              style: const TextStyle(color: Colors.white)),
                         )),
+                    ListTile(
+                      leading: const Icon(Icons.warning_amber_rounded),
+                      minLeadingWidth: 30,
+                      title: const Text('Avisos da Instituição'),
+                      onTap: () => navigate(MyApp.warnings),
+                    ),
                     ListTile(
                       leading: const Icon(Icons.calendar_month_outlined),
                       minLeadingWidth: 30,
@@ -66,12 +90,6 @@ class _WarningsState extends State<Warnings> {
                       title: const Text('Notas e Frequência'),
                       onTap: () => navigate(MyApp.grades),
                     ),
-                    ListTile(
-                      leading: const Icon(Icons.warning_amber_rounded),
-                      minLeadingWidth: 30,
-                      title: const Text('Avisos da Instituição'),
-                      onTap: () => navigate(MyApp.warnings),
-                    ),
                   ],
                 ),
               ),
@@ -79,7 +97,7 @@ class _WarningsState extends State<Warnings> {
                 leading: const Icon(Icons.logout),
                 minLeadingWidth: 30,
                 title: const Text('Sair'),
-                onTap: () => navigate(MyApp.login),
+                onTap: () => Auth().signOut(),
               )
             ],
           ),
@@ -130,8 +148,8 @@ class _WarningsState extends State<Warnings> {
                                     snapshot.data!.docs[index].id)
                                 .reference
                                 .id)
-                            .update({"read_at": DateTime.now()})
-                            .catchError((error) => print(error));
+                            .update({"read_at": DateTime.now()}).catchError(
+                                (error) => print(error));
                       }
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => WarningDetails(

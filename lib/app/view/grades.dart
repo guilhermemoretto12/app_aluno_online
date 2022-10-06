@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Grades extends StatefulWidget {
@@ -23,7 +24,7 @@ class _GradesState extends State<Grades> {
         body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
               .collection("grades")
-              .where("student_id", isEqualTo: "YdviIbZRx1AbCbO4JpR9")
+              .where("student_id", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {

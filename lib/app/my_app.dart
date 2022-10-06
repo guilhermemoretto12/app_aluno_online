@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'api/auth.dart';
 import 'view/grades.dart';
 import 'view/login.dart';
 import 'view/schedule.dart';
@@ -7,7 +8,7 @@ import 'view/warnings.dart';
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static const login = '/';
+  static const login = '/login';
   static const grades = '/grades';
   static const schedule = '/schedule';
   static const warnings = '/warnings';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         schedule: (context) => const Schedule(),
         warnings: (context) => const Warnings(),
       },
+      home: Auth().handleAuthState(),
     );
   }
 }

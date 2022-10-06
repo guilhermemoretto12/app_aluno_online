@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../api/auth.dart';
 import '../my_app.dart';
 
 class Login extends StatelessWidget {
@@ -49,7 +50,7 @@ class Login extends StatelessWidget {
               width: 150,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(MyApp.warnings);
+                  Auth().signInWithGoogle();
                 },
                 child: const Text('ENTRAR'),
               ),

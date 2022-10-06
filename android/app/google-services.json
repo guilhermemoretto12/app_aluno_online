@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "676771940075-spaqqenmoq6vlf1r15ih6dp2djjumbec.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.gmtta.app_aluno_online",
+            "certificate_hash": "58ddd4d7007c54aecfd7a395ed77b2807cc97dfe"
+          }
+        },
+        {
           "client_id": "676771940075-s44j3i4nvvgggqv26o1sukmmdumegrkj.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "676771940075-s44j3i4nvvgggqv26o1sukmmdumegrkj.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "676771940075-a63ekvf3b0inmm5lsfnpepvp7sgqfvaf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.gmtta.appAlunoOnline"
+              }
             }
           ]
         }
