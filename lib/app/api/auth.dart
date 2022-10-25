@@ -1,3 +1,4 @@
+import 'package:app_aluno_online/app/view/grades.dart';
 import 'package:app_aluno_online/app/view/login.dart';
 import 'package:app_aluno_online/app/view/warnings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +13,8 @@ class Auth {
           if (snapshot.hasData) {
             return const Warnings();
           } else {
-            return const Login();
+            // return const Login();
+            return const Grades();
           }
         });
   }
