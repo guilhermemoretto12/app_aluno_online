@@ -43,6 +43,8 @@ dependencies:
   path_provider:
   firebase_auth:
   google_sign_in:
+  collection: 1.15.0
+  flutter_signin_button: ^2.0.0
 
 
 dev_dependencies:

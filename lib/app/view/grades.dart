@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:grouped_list/grouped_list.dart';
+import "package:collection/collection.dart";
 
 class Grades extends StatefulWidget {
   const Grades({Key? key}) : super(key: key);
@@ -25,15 +25,25 @@ class _GradesState extends State<Grades> {
         body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
               .collection("grades")
-              // .where("student_id", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-              .where("student_id", isEqualTo: 'ThuoYFnoHjhPtmKroFKM211Z6b73')
+              .where("student_id",
+                  isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+              .orderBy('period', descending: true)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              List<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+                  groupedArray = [];
+              snapshot.data!.docs
+                  .groupListsBy((element) => element.get("discipline"))
+                  .forEach((key, value) {
+                groupedArray.add(value);
+              });
               return ListView.builder(
-                itemCount: snapshot.data!.docs.length,
+                itemCount: groupedArray.length,
                 itemBuilder: (context, index) {
-                  var item = snapshot.data!.docs[index];
+                  var disciplineGrades = groupedArray[index];
+                  disciplineGrades
+                      .sort((a, b) => a.get('period'));
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Card(
@@ -54,7 +64,9 @@ class _GradesState extends State<Grades> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
-                                    item.get('discipline').toString(),
+                                    disciplineGrades[0]
+                                        .get('discipline')
+                                        .toString(),
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -65,68 +77,108 @@ class _GradesState extends State<Grades> {
                               ),
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              SizedBox(
-                                  height: 60,
-                                  child: Column(
-                                    children: [
-                                      const Text('Nota'),
-                                      Text(
-                                        item.get('grade').toString(),
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      )
-                                    ],
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                  )),
-                              SizedBox(
-                                  height: 60,
-                                  child: Column(
-                                    children: [
-                                      const Text('Aulas'),
-                                      Text(
-                                        item.get('classes').toString(),
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      )
-                                    ],
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                  )),
-                              SizedBox(
-                                  height: 60,
-                                  child: Column(
-                                    children: [
-                                      const Text('Freq.'),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.baseline,
-                                        textBaseline: TextBaseline.alphabetic,
+                          ListView.separated(
+                            shrinkWrap: true,
+                            itemCount: disciplineGrades.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const Divider(height: 1);
+                            },
+                            itemBuilder: (context, index) {
+                              var grade = disciplineGrades[index];
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  SizedBox(
+                                      height: 60,
+                                      child: Column(
                                         children: [
+                                          const Text('Período'),
                                           Text(
-                                            item.get('frequency').toString(),
+                                            grade.get('period').toString() +
+                                                '°',
                                             style: const TextStyle(
                                               fontSize: 20,
                                             ),
-                                          ),
-                                          Text(
-                                            ' (${item.get('frequency') * 100 / item.get('classes')})%',
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                            ),
-                                          ),
+                                          )
                                         ],
-                                      )
-                                    ],
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                  )),
-                            ],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                      )),
+                                  SizedBox(
+                                      height: 60,
+                                      child: Column(
+                                        children: [
+                                          const Text('Nota'),
+                                          Text(
+                                            grade.get('grade').toString(),
+                                            style: const TextStyle(
+                                              fontSize: 20,
+                                            ),
+                                          )
+                                        ],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                      )),
+                                  const SizedBox(
+                                    height: 40,
+                                    width: 0,
+                                    child: VerticalDivider(
+                                      width: 20,
+                                      thickness: 0.2,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height: 60,
+                                      child: Column(
+                                        children: [
+                                          const Text('Aulas'),
+                                          Text(
+                                            grade.get('classes').toString(),
+                                            style: const TextStyle(
+                                              fontSize: 20,
+                                            ),
+                                          )
+                                        ],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                      )),
+                                  SizedBox(
+                                      height: 60,
+                                      child: Column(
+                                        children: [
+                                          const Text('Freq.'),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.baseline,
+                                            textBaseline:
+                                                TextBaseline.alphabetic,
+                                            children: [
+                                              Text(
+                                                grade
+                                                    .get('frequency')
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                              Text(
+                                                ' (${grade.get('frequency') * 100 / grade.get('classes')})%',
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                      )),
+                                ],
+                              );
+                            },
                           )
                         ],
                       ),
